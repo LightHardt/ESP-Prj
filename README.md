@@ -12,6 +12,7 @@ I first set up the ESP IDF environment on Windows so I could start developing. H
 2. Go into the menuconfig to configure various settings such as the CPU clock speed and flash size.
 
 3. Commands used:
+   - `idf.py build create-project ESP-Prj .` (to setup project)
    - `idf.py build` (to build the software)
    - `idf.py -p COM8 flash monitor` (to flash to the COM port the device was connected to and monitor output)
    - `idf.py menuconfig` (to modify the configuration for compilation)
