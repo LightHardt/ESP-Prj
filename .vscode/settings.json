@@ -1,0 +1,9 @@
+{
+    "terminal.integrated.profiles.windows": {
+        "ESP IDF" : {
+            "path" : "C:\\Windows\\system32\\cmd.exe",
+            "args" : ["/k", "C:\\Espressif\\idf_cmd_init.bat esp-idf-ab7213b7273352b64422b1f400ff27a0"]
+        }
+    },
+     "terminal.integrated.defaultProfile.windows": "ESP IDF",
+}
