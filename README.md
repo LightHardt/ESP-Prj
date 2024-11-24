@@ -4,7 +4,7 @@ The goal of this project was to gain embedded programming experience with an ESP
 
 ## ESP IDF
 
-I first set up the ESP IDF environment on Windows so I could start developing. Here are some notable things I needed to do:
+I first set up the [ESP IDF environment on Windows](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/windows-setup.html) so I could start developing. Here are some notable things I needed to do once I created the project:
 
 1. Make sure to change the target device.  
    - This was important as the default is the regular ESP32, but I needed the ESP32-S3.
@@ -12,7 +12,7 @@ I first set up the ESP IDF environment on Windows so I could start developing. H
 2. Go into the menuconfig to configure various settings such as the CPU clock speed and flash size.
 
 3. Commands used:
-   - `idf.py build create-project ESP-Prj .` (to setup project)
+   - `idf.py build create-project ESP-Prj .` (to create project)
    - `idf.py build` (to build the software)
    - `idf.py -p COM8 flash monitor` (to flash to the COM port the device was connected to and monitor output)
    - `idf.py menuconfig` (to modify the configuration for compilation)
@@ -20,7 +20,7 @@ I first set up the ESP IDF environment on Windows so I could start developing. H
 
 ## IDE
 
-I used Codium as my IDE and made some settings to get the environment set up in the integrated terminal. I also used the `compile_commands.json` file generated from building for the clangd language server.
+I used [VSCodium](https://github.com/VSCodium/vscodium) as my IDE and used the `settings.json` to get the environment set up in the default integrated terminal for the workspace. I also used the `compile_commands.json` file generated from building with `idf.py build` for the [clangd language server](https://clangd.llvm.org/installation) that I use with the IDE.
 
 ## Devices/Tools
 
