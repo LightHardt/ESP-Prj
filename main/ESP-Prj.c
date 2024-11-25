@@ -31,13 +31,17 @@
 #define SSD1306_SETCONTRAST          0X81        // Need to set cONTRAST
 #define SSD1306_SETADDRESSINGMODE    0X20        // Need to set cONTRAST
 
+// Display constants
+#define DISPLAY_WIDTH                 128
+#define DISPLAY_HEIGHT                64
+
 // Need these handles to communicate with devices 
 i2c_master_bus_handle_t bus_handle;
 i2c_master_dev_handle_t dev_handle;
 
 // Buffer that will hold display data
-uint8_t display_buffer[128 * (64 / 8)] = {0}; // Width * ((height / 8) Written this way as each page is 8 pixels high you want total height to be divided by 8
-size_t display_buffer_len = 128 * (64 / 8);
+uint8_t display_buffer[DISPLAY_WIDTH * (DISPLAY_HEIGHT / 8)] = {0}; // Width * ((height / 8) Written this way as each page is 8 pixels high you want total height to be divided by 8
+size_t display_buffer_len = DISPLAY_WIDTH * (DISPLAY_HEIGHT / 8);
 
 // Tag for logging functionality
 static const char* TAG = "i2cLed";
@@ -105,18 +109,37 @@ static void ssd1306_send_data(void) {
         ESP_LOGI(TAG, "Attempting to send page %d of display buffer", page);
         // attempt to write display data
         ESP_ERROR_CHECK(i2c_master_transmit(dev_handle, page_buffer, sizeof(page_buffer), -1));
-    } 
-    
+    }
+    ESP_LOGI(TAG, "Succesfully sent display buffer");
 }
 
-void test_pattern(void) {
-    for (int pixel = 0; pixel < 1024; pixel++) {
-        if (pixel % 2) {
-            display_buffer[pixel] = 0x00;
-        }
-        else {
-            display_buffer[pixel] = 0xFF;
-        }
+// Letting chat GPT attempt to make a cool image
+// Gave it two attempts first try was pretty bad second one was better but not good either
+void generate_smiley(void) {
+    memset(display_buffer, 0x00, display_buffer_len); // Clear the buffer
+
+    // Face outline (circle)
+    for (int col = 30; col < 98; col++) {
+        display_buffer[1 * DISPLAY_WIDTH + col] = 0x18; // Top edge of the circle
+        display_buffer[6 * DISPLAY_WIDTH + col] = 0x18; // Bottom edge of the circle
+    }
+    for (int col = 28; col < 100; col++) {
+        display_buffer[2 * DISPLAY_WIDTH + col] = 0xFF; // Middle of the top arc
+        display_buffer[5 * DISPLAY_WIDTH + col] = 0xFF; // Middle of the bottom arc
+    }
+    for (int col = 26; col < 102; col++) {
+        display_buffer[3 * DISPLAY_WIDTH + col] = 0xFF; // Side arc
+        display_buffer[4 * DISPLAY_WIDTH + col] = 0xFF; // Side arc
+    }
+
+    // Eyes
+    display_buffer[2 * DISPLAY_WIDTH + 50] = 0x3C; // Left eye (vertical)
+    display_buffer[2 * DISPLAY_WIDTH + 78] = 0x3C; // Right eye (vertical)
+
+    // Smile
+    for (int col = 45; col < 83; col++) {
+        display_buffer[5 * DISPLAY_WIDTH + col] = 0x66; // Upper smile curve
+        display_buffer[6 * DISPLAY_WIDTH + col] = 0x18; // Lower smile curve
     }
 }
 
@@ -170,9 +193,15 @@ void app_main(void)
     ESP_LOGI(TAG, "Succesfully sent display resume command");
 
     // manipulate display buffer to show some level of functionality
-    test_pattern();
+
+    // Expecting the bottom two bits of each "page" to be on
+    memset(display_buffer, 3, display_buffer_len);
     ssd1306_send_data();
-    ESP_LOGI(TAG, "Succesfully sent display buffer");
+    vTaskDelay(5000 / portTICK_PERIOD_MS); // So i have time to look at display
+
+    // Expecting to see chatgpts botched smiley face lol
+    generate_smiley();
+    ssd1306_send_data();
 
     for(;;) {
         // Need this delay or else the freertos watchdog will get mad as no idle time
