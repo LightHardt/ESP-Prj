@@ -44,7 +44,7 @@ uint8_t display_buffer[DISPLAY_WIDTH * (DISPLAY_HEIGHT / 8)] = {0}; // Width * (
 size_t display_buffer_len = DISPLAY_WIDTH * (DISPLAY_HEIGHT / 8);
 
 // Tag for logging functionality
-static const char* TAG = "i2cLed";
+static const char* TAG = "i2cDisplay";
 
 /**
  * @brief i2c master initialization
