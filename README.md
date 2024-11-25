@@ -17,6 +17,7 @@ I first set up the [ESP IDF environment on Windows](https://docs.espressif.com/p
    - `idf.py -p COM8 flash monitor` (to flash to the COM port the device was connected to and monitor output)
    - `idf.py menuconfig` (to modify the configuration for compilation)
    - `idf.py set-target esp32-s3` (to change the target)
+   - `idf.py openocd gdbtui` (uses built in JTAG for debugging)
 
 ## IDE
 
@@ -42,6 +43,8 @@ I used [VSCodium](https://github.com/VSCodium/vscodium) as my IDE and used the `
 3. For this device, most of the pins could be used for I2C communication, so I referred to the pin layout to pick some unimportant ones.
 
 4. In this repo, most of the documentation I referred to for information is attached.
+
+5. Using the built-in JTAG was a nightmare. I used Zadig to flash drivers that I probably didn’t even need, which likely caused my COM port to stop working. To fix it, I flashed it with the serial drivers to get the COM port back, but then OpenOCD stopped working. I eventually downloaded these [USB JTAG drivers](https://github.com/espressif/esp-win-usb-drivers/releases) and used Device Manager to install them for the USB JTAG/Serial Debug unit. After that, everything finally started working.
 
 ## Breadboard
 
