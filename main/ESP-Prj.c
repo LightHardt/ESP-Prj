@@ -11,6 +11,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+// Images generated with LCD Image Converter
+#include "name.h"
+
 #define I2C_MASTER_SCL_IO           GPIO_NUM_0      // GPIO number used for I2C master clock
 #define I2C_MASTER_SDA_IO           GPIO_NUM_1      // GPIO number used for I2C master data 
 #define I2C_MASTER_NUM              0               // I2C master i2c port number, the number of i2c peripheral interfaces available will depend on the chip (my case there are 2 esp32-s3)
@@ -59,7 +62,7 @@ static void i2c_master_init(void)
         .sda_io_num = I2C_MASTER_SDA_IO,
         .scl_io_num = I2C_MASTER_SCL_IO,
         .glitch_ignore_cnt = 7,
-        .flags.enable_internal_pullup = true,
+        .flags.enable_internal_pullup = false, // To use internal pull-up resistors 45kohms I use external 2kohms one
     };
 
     ESP_LOGI(TAG, "Attempting master i2c init");
@@ -201,6 +204,10 @@ void app_main(void)
 
     // Expecting to see chatgpts botched smiley face lol
     generate_smiley();
+    ssd1306_send_data();
+
+    // Name
+    memcpy(display_buffer, name_data_Image, display_buffer_len);
     ssd1306_send_data();
 
     for(;;) {
